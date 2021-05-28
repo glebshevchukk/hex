@@ -166,6 +166,11 @@ function backlight (widget)
     </tbody></table>
   </center>
 
+
+<div id="red-wins" style="display:none;">Red wins!</div>
+
+<div id="blue-wins" style="display:none;">Blue wins!</div>
+
 <div style="position:relative; left: 30%">
 <!-- ROW 1-->
 <div style="position:absolute;top:0px; left:0px;">
@@ -394,6 +399,11 @@ click(mark(I,J)) :: mark(I,J)
 
 style(mark(I,J),"backgroundColor","#ff0000") :- tile(I,J,red,0)
 style(mark(I,J),"backgroundColor","#1e00ff") :- tile(I,J,blue,0)
+style(red-wins,"display","block") :- terminal
+style(blue-wins,"display","block") :- terminal
+
+terminal :- turn(1)
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% End of Rules
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
