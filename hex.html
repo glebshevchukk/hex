@@ -377,7 +377,7 @@ function backlight (widget)
 
 <!--=========================================================================-->
 
-<textarea id="lambda" type="text/hrf" style="display:none">  cell(1,1,1,1,blank)
+<textarea id="lambda" type="text/hrf" style="display:none"> 
   control(red)
   turn(0)
 </textarea>
@@ -388,12 +388,12 @@ function backlight (widget)
 
 mark(A,B) :: control(red) & ~tile(A,B,P,M) ==> ~control(red) & control(blue) & tile(A,B,red,0)
 mark(A,B) :: control(blue) & ~tile(A,B,P,M) ==> ~control(blue) & control(red) & tile(A,B,blue,0)
+mark(A,B) :: turn(P) & evaluate(plus(P,1),M) ==> ~turn(P) & turn(M)
 
 click(mark(I,J)) :: mark(I,J)
 
 style(mark(I,J),"backgroundColor","#ff0000") :- tile(I,J,red,0)
 style(mark(I,J),"backgroundColor","#1e00ff") :- tile(I,J,blue,0)
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% End of Rules
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
