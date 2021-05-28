@@ -391,14 +391,14 @@ function backlight (widget)
 %%% Basic Rules
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-mark(A,B) :: control(red) & ~tile(A,B,P,M) ==> ~control(red) & control(blue) & tile(A,B,red,0)
-mark(A,B) :: control(blue) & ~tile(A,B,P,M) ==> ~control(blue) & control(red) & tile(A,B,blue,0)
+mark(A,B) :: control(red) & ~tile(A,B,P,M) & turn(P) ==> ~control(red) & control(blue) & tile(A,B,red,P)
+mark(A,B) :: control(blue) & ~tile(A,B,P,M) & turn(P)==> ~control(blue) & control(red) & tile(A,B,blue,P) 
 mark(A,B) :: turn(P) & evaluate(plus(P,1),M) ==> ~turn(P) & turn(M)
 
 click(mark(I,J)) :: mark(I,J)
 
-style(mark(I,J),"backgroundColor","#ff0000") :- tile(I,J,red,0)
-style(mark(I,J),"backgroundColor","#1e00ff") :- tile(I,J,blue,0)
+style(mark(I,J),"backgroundColor","#ff0000") :- tile(I,J,red,P)
+style(mark(I,J),"backgroundColor","#1e00ff") :- tile(I,J,blue,P)
 style(red-wins,"display","block") :- terminal
 style(blue-wins,"display","block") :- terminal
 
