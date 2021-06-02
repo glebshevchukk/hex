@@ -140,7 +140,13 @@ function backlight (widget)
   return true}
   
 function doreset ()
- {definefacts(lambda,readdata(document.getElementById('lambda').textContent));
+ {
+  definefacts(lambda,readdata(document.getElementById('lambda').textContent));
+  var tiles = document.querySelectorAll('[id*="mark"]');
+
+  tiles.forEach(function(tile) {
+  tile.style["backgroundColor"] = "#cbd2d2";
+});
   populatesheet();
   return true}
 
