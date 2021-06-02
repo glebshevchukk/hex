@@ -138,6 +138,11 @@ function backlight (widget)
  {widget.style.boxShadow = 'none';
   widget.style.backgroundColor = '#eeeeee';
   return true}
+  
+function doreset ()
+ {definefacts(lambda,readdata(document.getElementById('lambda').textContent));
+  populatesheet();
+  return true}
 
 //------------------------------------------------------------------------------
 // End
@@ -333,6 +338,8 @@ function backlight (widget)
 </div>
 </div>
 
+
+
 <div style="height:700px"></div>
 
 <center>
@@ -380,10 +387,17 @@ function backlight (widget)
   </tbody></table>
 </center>
 
+<center>
+  <br/>
+  <input id='reset' type='button' value='Reset' onclick='doreset()'/>
+  <br/>
+  <br/>
+</center>
+
 <!--=========================================================================-->
 
 <textarea id="lambda" type="text/hrf" style="display:none"> 
-    tile(1,1,blank,blank)
+  tile(1,1,blank,blank)
   tile(1,2,blank,blank)
   tile(1,3,blank,blank)
   tile(1,4,blank,blank)
@@ -527,25 +541,24 @@ number(11)
 player(red)
 player(blue)
 
-
-
-mark(A,B) :: control(R) & turn(P) & tile(A,B,blank,blank) ==> ~tile(A,B,blank,blank) & tile(A,B,R,P)
+%% Mark a blank tile and only then change controls and increment turn
+mark(A,B) :: control(R) & player(Z) & distinct(Z,R) & turn(P) & evaluate(plus(P,1),M) & tile(A,B,blank,blank) ==> ~tile(A,B,blank,blank) & tile(A,B,R,P) & ~control(R) & control(Z) & ~turn(P) & turn(M)
 click(mark(I,J)) :: mark(I,J)
-mark(A,B) :: turn(P) & evaluate(plus(P,1),M) ==> ~turn(P) & turn(M)
-mark(A,B) :: control(P) & player(R) & distinct(P,R) ==> ~control(P) & control(R)
 
+mark(A,B) :: turn(1) & tile(A,B,red,0) ==> ~tile(A,B,red,0) & tile(A,B,blue,1) & ~control(blue) & control(red) & ~turn(1) & turn(2)
 
-mark(A,B) :: control(R) & turn(P) & number(D) & number(E) & tile(D,E,R,O) & evaluate(minus(A,1), C) & tile(C,B,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
-mark(A,B) :: control(R) & turn(P) & number(D) & number(E) & tile(D,E,R,O) & evaluate(minus(B,1), C) & tile(A,C,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
-mark(A,B) :: control(R) & turn(P) & number(D) & number(E) & tile(D,E,R,O) & evaluate(plus(A,1), C) & tile(C,B,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
-mark(A,B) :: control(R) & turn(P) & number(D) & number(E) & tile(D,E,R,O) & evaluate(plus(B,1), C) & tile(A,C,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
-mark(A,B) :: control(R) & turn(P) & number(D) & number(E) & tile(D,E,R,O) & evaluate(plus(A,1), C) & evaluate(plus(B,1),Z) & tile(C,Z,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
-mark(A,B) :: control(R) & turn(P) & number(D) & number(E) & tile(D,E,R,O) & evaluate(minus(A,1), C) & evaluate(minus(B,1),Z) & tile(C,Z,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
-
+mark(A,B) :: control(R) & turn(P) & tile(A,B,blank,blank) & number(D) & number(E) & tile(D,E,R,O) & evaluate(minus(A,1), C) & tile(C,B,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
+mark(A,B) :: control(R) & turn(P) & tile(A,B,blank,blank) & number(D) & number(E) & tile(D,E,R,O) & evaluate(minus(B,1), C) & tile(A,C,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
+mark(A,B) :: control(R) & turn(P) & tile(A,B,blank,blank) & number(D) & number(E) & tile(D,E,R,O) & evaluate(plus(A,1), C) & tile(C,B,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
+mark(A,B) :: control(R) & turn(P) & tile(A,B,blank,blank) & number(D) & number(E) & tile(D,E,R,O) & evaluate(plus(B,1), C) & tile(A,C,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
+mark(A,B) :: control(R) & turn(P) & tile(A,B,blank,blank) & number(D) & number(E) & tile(D,E,R,O) & evaluate(plus(A,1), C) & evaluate(plus(B,1),Z) & tile(C,Z,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
+mark(A,B) :: control(R) & turn(P) & tile(A,B,blank,blank) & number(D) & number(E) & tile(D,E,R,O) & evaluate(minus(A,1), C) & evaluate(minus(B,1),Z) & tile(C,Z,R,O) ==> ~tile(D,E,R,O) & tile(D,E,R,P)
 
 connecting_line(red) :- tile(1,Y,red,GROUP) & tile(11,Z,red,GROUP) 
 connecting_line(blue) :- tile(X,1,blue,GROUP) & tile(Y,11,blue,GROUP) 
 
+style(mark(I,J),"cursor","pointer") :- tile(I,J,blank,blank) 
+style(mark(I,J),"cursor","text") :- ~tile(I,J,blank,blank) & ~turn(1) & ~control(blue)
 
 style(mark(I,J),"backgroundColor","#ff0000") :- tile(I,J,red,P)
 style(mark(I,J),"backgroundColor","#1e00ff") :- tile(I,J,blue,P)
